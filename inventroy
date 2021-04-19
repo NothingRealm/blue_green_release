@@ -1,8 +1,0 @@
-[vms]
-vm1
-vm2
-vm3
-
-
-[all:vars]
-ansible_python_interpreter=/usr/bin/python3
