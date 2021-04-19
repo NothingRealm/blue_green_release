@@ -1,0 +1,6 @@
+---
+debug: true
+image_name: cloud
+image_version: latest
+dockerfile_path: ./ansible-blue-green/apps/v1.0.0
+build_args: {}

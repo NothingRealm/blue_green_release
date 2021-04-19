@@ -1,0 +1,60 @@
+---
+
+- name: Check if docker-py is installed
+  run_once: true
+  shell:
+    _raw_params: "pip freeze | grep docker-py== | wc -l"
+  delegate_to: localhost
+  register: docker_py_installed
+  changed_when: false
+
+
+
+- name: fail
+  run_once: true
+  fail:
+    msg: "You need to install docker-py: pip install docker-py"
+  when: docker_py_installed.stdout == "0"
+
+
+
+- name: Check if Image exists {{ image_name }}
+  run_once: true
+  shell:
+    _raw_params: "docker image history {{ image_name }}:{{ image_version }} | wc -l"
+  delegate_to: localhost
+  register: image_exists
+  changed_when: false
+
+
+
+- name: Print current image {{image_name}}
+  run_once: true
+  debug:
+    msg: "Building image: {{ image_name }}"
+  when:
+  - debug == true
+
+
+
+- name: Build the Image {{ image_name }}
+  run_once: true
+  docker_image:
+    path: "{{ dockerfile_path }}"
+    name: "{{ image_name }}"
+    tag: "{{ image_version }}"
+    buildargs: "{{ build_args }}"
+  delegate_to: localhost
+  when:
+  - image_exists.stdout == "0" and build_and_push_image_build == true
+
+
+
+- name: Push version {{ image_name }}
+  run_once: true
+  shell:
+    _raw_params: "docker push {{ image_name }}:{{ image_version }}"
+  delegate_to: localhost
+  when:
+  - image_exists.stdout == "0" and build_and_push_push == true
+

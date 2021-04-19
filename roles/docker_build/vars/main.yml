@@ -1,0 +1,3 @@
+image_version: v1.0.0
+dockerfile_path: ./ansible-blue-green/apps/v1.0.0
+build_args: {}

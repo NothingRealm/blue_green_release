@@ -1,0 +1,7 @@
+---
+
+- name: build and push docker image
+  hosts: vms
+  roles:
+      - docker_build
+  become: yes
