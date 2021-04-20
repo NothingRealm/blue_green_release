@@ -39,6 +39,7 @@
         "p_version": "{{ blue_green.green.image_version }}"
   when:
     - first_run
+  become: yes
 
 
 
@@ -104,6 +105,7 @@
         "p_color": "{{ ansible_local[app_name].color }}",
         "p_version": "{{ ansible_local[app_name].version }}"
   when: healthcheck_result.failed is not defined
+  become: yes
 
 
 
