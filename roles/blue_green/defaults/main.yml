@@ -1,0 +1,11 @@
+app_name: "into_the_clouds"
+image_name: cloud
+image_version: v1.0.0
+
+blue_green:
+  blue:
+    name: 'blue'
+    port: 3001
+  green:
+    name: 'green'
+    port: 3002

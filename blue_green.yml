@@ -1,0 +1,8 @@
+---
+
+- name:
+  roles:
+      - blue_green
+  hosts: localhost
+  connection: local
+  become: yes

@@ -1,0 +1,72 @@
+---
+
+- name: ensure facts.d dir exists
+  file:
+    path: /etc/ansible/facts.d
+    state: directory
+
+
+
+- name: Checks that directories variable are set
+  fail: msg="'blue_green' dict variable is not set."
+  when: blue_green is not defined
+
+
+
+- name: reread ansible_local facts
+  setup:
+    filter: ansible_local
+
+
+
+- name: check if run for the first time
+  set_fact:
+    first_run: "{{ 'no' if ansible_local[app_name] is defined else 'yes' }}"
+
+
+
+- name: store host facts
+  blockinfile:
+    dest: /etc/ansible/facts.d/{{ app_name }}.fact
+    marker: "{mark}"
+    marker_begin: '{'
+    marker_end: '}'
+    create: yes
+    block: |
+        "color": "{{ blue_green.blue.name }}",
+        "version": "{{ blue_green.blue.image_version }}",
+        "p_color": "{{ blue_green.green.name }}",
+        "p_version": "{{ blue_green.green.image_version }}"
+  when:
+    - first_run
+
+
+
+- name: reread ansible_local facts
+  setup:
+    filter: ansible_local
+  when: first_run
+
+
+- name: set color of ongoing deployment
+  set_fact:
+    current_color: "{{ ansible_local[app_name].p_color }}"
+
+
+- name: Update state
+  blockinfile:
+    dest: /etc/ansible/facts.d/{{ app_name }}.fact
+    marker: "{mark}"
+    marker_begin: '{'
+    marker_end: '}'
+    create: yes
+    block: |
+        "color": "{{ current_color }}",
+        "version": "{{ image_version }}",
+        "p_color": "{{ ansible_local[app_name].color }}",
+        "p_version": "{{ ansible_local[app_name].version }}"
+
+
+- name: debug
+  debug:
+    msg: "{{ current_color }}"
