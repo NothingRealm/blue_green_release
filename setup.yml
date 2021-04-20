@@ -1,0 +1,6 @@
+---
+
+- name: setup servers
+  roles:
+      - setup
+  hosts: vms
