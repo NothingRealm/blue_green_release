@@ -1,6 +1,8 @@
 app_name: "into_the_clouds"
 image_name: cloud
 image_version: v1.0.0
+healthcheck_path: /healthz
+nginx_upstream:  clouds
 
 blue_green:
   blue:

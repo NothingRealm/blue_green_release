@@ -48,9 +48,47 @@
   when: first_run
 
 
+
 - name: set color of ongoing deployment
   set_fact:
     current_color: "{{ ansible_local[app_name].p_color }}"
+
+
+
+- name: deploy app
+  docker_container:
+    name: "{{ app_name }}_{{ current_color }}"
+    state: started
+    ports: "{{ blue_green[current_color].port }}:3000"
+    image: "{{ image_name }}:{{ image_version }}"
+    restart_policy: unless-stopped
+  register: _app_deployment
+
+
+- name: perform healthcheck on deployed containers
+  uri:
+    url: "{{ 'http://127.0.0.1' + ':' + blue_green[current_color].port + healthcheck_path }}"
+    method: GET
+    status_code: 200
+  retries: 10
+  delay: 5
+  register: healthcheck_result
+  until: healthcheck_result.failed is defined
+  changed_when: False
+
+
+
+- name: generate nginx config for the application
+  template:
+    src: cloud.j2
+    dest: "/etc/nginx/conf.d/{{ app_name }}.conf"
+    backup: yes
+  when: healthcheck_result.failed is not defined
+  register: _nginx_config
+  notify:
+    - check nginx configuration
+    - reload nginx
+
 
 
 - name: Update state
@@ -65,8 +103,11 @@
         "version": "{{ image_version }}",
         "p_color": "{{ ansible_local[app_name].color }}",
         "p_version": "{{ ansible_local[app_name].version }}"
+  when: healthcheck_result.failed is not defined
+
 
 
 - name: debug
   debug:
     msg: "{{ current_color }}"
+
