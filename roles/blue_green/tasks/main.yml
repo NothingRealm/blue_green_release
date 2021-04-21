@@ -34,9 +34,11 @@
     create: yes
     block: |
         "color": "{{ blue_green.blue.name }}",
-        "version": "{{ blue_green.blue.image_version }}",
+        "version": "{{ image_version }}",
+        "image": "{{ image_name }}",
         "p_color": "{{ blue_green.green.name }}",
-        "p_version": "{{ blue_green.green.image_version }}"
+        "p_version": "{{ image_version }}",
+        "p_image": "{{ image_name }}"
   when:
     - first_run
   become: yes
@@ -53,7 +55,18 @@
 - name: set color of ongoing deployment
   set_fact:
     current_color: "{{ ansible_local[app_name].p_color }}"
-
+    current_image: >-
+      {%- if not rollback -%}
+        {{ image_name }}
+      {%- else -%}
+        {{ ansible_local[app_name].p_image }}
+      {%- endif %}
+    current_version: >-
+      {%- if not rollback -%}
+        {{ image_version }}
+      {%- else -%}
+        {{ ansible_local[app_name].p_version }}
+      {%- endif %}
 
 
 - name: deploy app
@@ -61,7 +74,7 @@
     name: "{{ app_name }}_{{ current_color }}"
     state: started
     ports: "{{ blue_green[current_color].port }}:3000"
-    image: "{{ image_name }}:{{ image_version }}"
+    image: "{{ current_image }}:{{ current_version }}"
     restart_policy: unless-stopped
   register: _app_deployment
 
@@ -101,9 +114,11 @@
     create: yes
     block: |
         "color": "{{ current_color }}",
-        "version": "{{ image_version }}",
+        "version": "{{ current_version }}",
+        "image": "{{ current_image }}",
         "p_color": "{{ ansible_local[app_name].color }}",
-        "p_version": "{{ ansible_local[app_name].version }}"
+        "p_version": "{{ ansible_local[app_name].version }}",
+        "p_image": "{{ ansible_local[app_name].image }}"
   when: not healthcheck_result.failed 
   become: yes
 
