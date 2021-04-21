@@ -82,13 +82,13 @@
 - name: generate nginx config for the application
   template:
     src: cloud.j2
-    dest: "/etc/nginx/conf.d/{{ app_name }}.conf"
-    backup: yes
-  when: healthcheck_result.failed is not defined
+    dest: "/etc/nginx/sites-enabled/{{ app_name }}.conf"
+  when: not healthcheck_result.failed 
   register: _nginx_config
   notify:
-    - check nginx configuration
+    - check configuration
     - reload nginx
+  become: yes
 
 
 
