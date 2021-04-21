@@ -64,6 +64,7 @@ image_name: cloud
 image_version: v1.0.0
 healthcheck_path: /healthz
 nginx_upstream:  clouds
+rollback: false
 
 blue_green:
   blue:
