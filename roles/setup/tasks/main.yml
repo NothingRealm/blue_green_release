@@ -31,8 +31,20 @@
   loop: [ 'docker-ce', 'docker-ce-cli', 'containerd.io']
 
 
+- name: Install Docker Module for Python
+  pip:
+    name: docker-py
+
+
 - name: Install nginx
   apt:
     name: ['nginx']
     state: latest
 
+
+
+- name: Allow all access to tcp port 80
+  ufw:
+    rule: allow
+    port: '80'
+    proto: tcp
