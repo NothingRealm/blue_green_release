@@ -7,7 +7,7 @@
       - include_role:
           name: blue_green
     rescue:
-      - name: send mail 
+      - name: send mail failure
         mail:
           host: smtp.gmail.com
           port: 465
