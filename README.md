@@ -1,10 +1,16 @@
 And all his life was his trees.
 
 # blue_green_release
-
+- [x] Dockerize
+- [x] Setup the vms
+- [x] Build Docker Images with proper tags
+- [x] Perform blue-green deployment
+- [x] Perform rollback
+- [ ] Send mail when a fail happens
+- [ ] CI for playbook
 
 # Overview
-I broke the task to three role for seperation of concepts:
+I broke the task to three roles for seperation of concepts:
 - blue-green
 - setup
 - docker_build
@@ -57,7 +63,7 @@ This is the main role which does the blue green deployment. The main concept beh
 It will hold the `image_name` and `image_version` for each deployment and updates the state machine if deployment was successful.
 The health check consist of 10 time requesting to the `healthcheck_path` with 2 secondes of delay and if everything was allright then nginx configuration
 will be done.\
-The following variables are set in the `defaults` and can  be overriden in the vars folder:
+The following variables are set in the `defaults` and can  be overriden in the `vars` folder:
 ```
 app_name: "into_the_clouds"
 image_name: cloud
@@ -74,3 +80,5 @@ blue_green:
     name: 'green'
     port: 3002
 ```
+**In order to perform a roll back set `rollback` to `true` in vars directory**
+
