@@ -3,4 +3,6 @@
 - name: setup servers
   roles:
       - setup
-  hosts: vms
+  hosts: localhost
+  connection: local
+  become: yes
