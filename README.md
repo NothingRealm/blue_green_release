@@ -6,7 +6,7 @@ And all his life was his trees.
 - [x] Build Docker Images with proper tags
 - [x] Perform blue-green deployment
 - [x] Perform rollback
-- [ ] Send mail when a fail happens
+- [x] Send mail when a fail happens
 - [ ] CI for playbook
 
 # Overview
@@ -22,6 +22,7 @@ And following config files:
 
 ### Inventory
 Here you should specify the groups of server you want ansible to connect to.
+You must set `mail_username` and `mail_password` and `to_mail` for sending email. (Sending mail is only set for blue_green role)
 
 ### ansible.cfg
 This file is for ansible settings indicating which inventory to use and how the connection should be established.
