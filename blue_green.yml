@@ -1,7 +1,20 @@
 ---
 
-- name:
-  roles:
-      - blue_green
-  hosts: localhost
-  connection: local
+- name: Block_Rescue
+  hosts: localhost 
+  tasks:
+  - block:
+      - include_role:
+          name: blue_green
+    rescue:
+      - name: send mail 
+        mail:
+          host: smtp.gmail.com
+          port: 465
+          secure: always
+          username: "{{ mail_username }}"
+          password: "{{ mail_password }}"
+          to: "{{ to_mail }}"
+          subject: Report
+          body: System {{ ansible_hostname }} has been failed for deployment.
+        delegate_to: localhost

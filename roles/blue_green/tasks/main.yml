@@ -84,7 +84,7 @@
     url: "{{ 'http://127.0.0.1' + ':' + blue_green[current_color].port + healthcheck_path }}"
     method: GET
     status_code: 200
-  retries: 10
+  retries: 1
   delay: 5
   register: healthcheck_result
   until: not healthcheck_result.failed
@@ -128,3 +128,14 @@
   debug:
     msg: "{{ healthcheck_result }}"
 
+- name: send mail 
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    secure: always
+    username: "{{ mail_username }}"
+    password: "{{ mail_password }}"
+    to: "{{ to_mail }}"
+    subject: Report
+    body: System {{ ansible_hostname }} has been successful for {{ current_color }} deployment.
+  delegate_to: localhost
