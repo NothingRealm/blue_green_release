@@ -31,6 +31,13 @@
   loop: [ 'docker-ce', 'docker-ce-cli', 'containerd.io']
 
 
+- name: adding '{{ ansible_env.USER }}' to group docker
+  user:
+    name: '{{ ansible_env.USER }}'
+    groups: docker
+    append: yes
+
+
 - name: Install Docker Module for Python
   pip:
     name: docker-py
