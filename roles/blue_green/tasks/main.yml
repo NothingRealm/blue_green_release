@@ -74,7 +74,7 @@
   retries: 10
   delay: 5
   register: healthcheck_result
-  until: healthcheck_result.failed is defined
+  until: not healthcheck_result.failed
   changed_when: False
 
 
@@ -104,12 +104,12 @@
         "version": "{{ image_version }}",
         "p_color": "{{ ansible_local[app_name].color }}",
         "p_version": "{{ ansible_local[app_name].version }}"
-  when: healthcheck_result.failed is not defined
+  when: not healthcheck_result.failed 
   become: yes
 
 
 
 - name: debug
   debug:
-    msg: "{{ current_color }}"
+    msg: "{{ healthcheck_result }}"
 
