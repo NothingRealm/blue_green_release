@@ -1,13 +1,14 @@
 app_name: "into_the_clouds"
 image_name: cloud
-image_version: v1.0.0
+image_version: v2.0.0
 healthcheck_path: /healthz
 nginx_upstream:  clouds
+rollback: true
 
 blue_green:
   blue:
     name: 'blue'
-    port: 3001
+    port: "3001"
   green:
     name: 'green'
-    port: 3002
+    port: "3002"
