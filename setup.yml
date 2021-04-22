@@ -1,8 +1,13 @@
 ---
 
-- name: setup servers
-  roles:
-      - setup
-  hosts: localhost
-  connection: local
-  become: yes
+- hosts: localhost
+  tasks: 
+    - name: get the username running the deploy
+      command: whoami
+      register: username
+
+    - block:
+      - include_role:
+          name: setup
+      become: yes
+    
