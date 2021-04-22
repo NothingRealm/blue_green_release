@@ -2,12 +2,9 @@ local
 
 [vms]
 vm1
-vm2
-vm3
 
 
 [all:vars]
-ansible_python_interpreter=/usr/bin/python3.8
 mail_username=
 mail_password=
 to_mail=
